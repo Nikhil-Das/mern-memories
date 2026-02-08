@@ -1,17 +1,28 @@
 import { useSelector } from "react-redux";
 import Post from "./Post";
-// import useStyles from "./styles";
+import useStyles from "./styles";
+import { Grid, CircularProgress } from "@mui/material";
 
 const Posts = () => {
-  // const classes = useStyles();
-  const data = useSelector((state) => state.posts);
-  console.log(data);
+  const classes = useStyles();
+  const { posts = [] } = useSelector((state) => state.posts);
+  // console.log(data.posts);
   return (
     <>
-      <h1>Posts</h1>
-      <Post />
-      <Post />
-      <Post />
+      {!posts.length ? (
+        <CircularProgress />
+      ) : (
+        <Grid
+          className={classes.container}
+          container
+          alignItems="stretch"
+          spacing={3}
+        >
+          {posts.map((post) => (
+            <Post key={post._id} post={post} />
+          ))}
+        </Grid>
+      )}
     </>
   );
 };
