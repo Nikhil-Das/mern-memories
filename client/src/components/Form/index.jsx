@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, Typography, Paper, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Box,
+  Divider,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+import useStyles from "./styles";
 
 const Form = ({ currentId, setCurrentId }) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const [postData, setPostData] = useState({
     creator: "",
@@ -55,24 +64,28 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper
-      sx={{
-        padding: 2,
-      }}
-    >
+    <Paper className={classes.paper}>
       <form
         autoComplete="off"
         noValidate
         onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
+        className={classes.form}
       >
-        <Typography variant="h6">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            marginBottom: 2,
+            fontWeight: 600,
+            background: "linear-gradient(45deg, #667eea 30%, #764ba2 90%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           {currentId ? `Editing "${post?.title}"` : "Creating a Memory"}
         </Typography>
+        <Divider sx={{ width: "100%", marginBottom: 2 }} />
         <TextField
           name="creator"
           variant="outlined"
@@ -82,7 +95,20 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, creator: e.target.value })
           }
-          sx={{ margin: 1 }}
+          sx={{
+            margin: 1,
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "#667eea",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#667eea",
+              },
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#667eea",
+            },
+          }}
         />
         <TextField
           name="title"
@@ -91,7 +117,20 @@ const Form = ({ currentId, setCurrentId }) => {
           fullWidth
           value={postData.title}
           onChange={(e) => setPostData({ ...postData, title: e.target.value })}
-          sx={{ margin: 1 }}
+          sx={{
+            margin: 1,
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "#667eea",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#667eea",
+              },
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#667eea",
+            },
+          }}
         />
         <TextField
           name="message"
@@ -104,7 +143,20 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
           }
-          sx={{ margin: 1 }}
+          sx={{
+            margin: 1,
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "#667eea",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#667eea",
+              },
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#667eea",
+            },
+          }}
         />
         <TextField
           name="tags"
@@ -115,9 +167,22 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, tags: e.target.value.split(",") })
           }
-          sx={{ margin: 1 }}
+          sx={{
+            margin: 1,
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "#667eea",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#667eea",
+              },
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#667eea",
+            },
+          }}
         />
-        <Box sx={{ width: "97%", margin: "10px 0" }}>
+        <Box className={classes.fileInput}>
           <input
             type="file"
             onChange={async (e) => {
@@ -127,24 +192,36 @@ const Form = ({ currentId, setCurrentId }) => {
                 setPostData({ ...postData, selectedFile: base64 });
               }
             }}
+            style={{
+              width: "100%",
+              padding: "8px",
+              cursor: "pointer",
+            }}
           />
         </Box>
         <Button
           variant="contained"
-          color="primary"
+          className={classes.buttonSubmit}
           size="large"
           type="submit"
           fullWidth
-          sx={{ marginBottom: 2 }}
         >
-          Submit
+          {currentId ? "Update Memory" : "Create Memory"}
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
           color="secondary"
           size="small"
           fullWidth
           onClick={clear}
+          sx={{
+            marginTop: 1,
+            transition: "all 0.3s ease-in-out",
+            "&:hover": {
+              backgroundColor: "rgba(244, 67, 54, 0.1)",
+              transform: "translateY(-2px)",
+            },
+          }}
         >
           Clear
         </Button>
