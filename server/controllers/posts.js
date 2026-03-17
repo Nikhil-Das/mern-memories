@@ -20,3 +20,15 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+export const updatePost = async (req, res) => {
+  res.send("update post");
+};
+
+export const deletePost = async (req, res) => {
+  res.send("delete post");
+};
+
+export const likePost = async (req, res) => {
+  res.send("like post");
+};
