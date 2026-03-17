@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper, Box } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { createPost } from "../../actions/posts";
-// import { createPost } from "../../api";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../../actions/posts";
 
-const Form = () => {
+const Form = ({ currentId, setCurrentId }) => {
   const dispatch = useDispatch();
   const [postData, setPostData] = useState({
     creator: "",
@@ -13,11 +12,26 @@ const Form = () => {
     tags: "",
     selectedFile: "",
   });
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((message) => message._id === currentId) : null,
+  );
+
+  useEffect(() => {
+    if (post) {
+      setPostData(post);
+    }
+  }, [post]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(postData);
-    dispatch(createPost(postData));
+
+    if (currentId === 0) {
+      dispatch(createPost(postData));
+      clear();
+    } else {
+      dispatch(updatePost(currentId, postData));
+      clear();
+    }
   };
 
   function toBase64(file) {
@@ -30,6 +44,7 @@ const Form = () => {
   }
 
   const clear = () => {
+    setCurrentId(0);
     setPostData({
       creator: "",
       title: "",
@@ -42,7 +57,7 @@ const Form = () => {
   return (
     <Paper
       sx={{
-        padding: 2, // theme.spacing(2)
+        padding: 2,
       }}
     >
       <form
@@ -55,7 +70,9 @@ const Form = () => {
           justifyContent: "center",
         }}
       >
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">
+          {currentId ? `Editing "${post?.title}"` : "Creating a Memory"}
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -81,6 +98,8 @@ const Form = () => {
           variant="outlined"
           label="Message"
           fullWidth
+          multiline
+          rows={4}
           value={postData.message}
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
@@ -90,10 +109,12 @@ const Form = () => {
         <TextField
           name="tags"
           variant="outlined"
-          label="Tags"
+          label="Tags (comma separated)"
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
           sx={{ margin: 1 }}
         />
         <Box sx={{ width: "97%", margin: "10px 0" }}>
